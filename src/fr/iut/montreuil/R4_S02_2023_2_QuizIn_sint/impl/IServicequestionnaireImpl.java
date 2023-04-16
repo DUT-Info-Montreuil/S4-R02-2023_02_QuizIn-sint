@@ -5,6 +5,8 @@ import fr.iut.montreuil.R4_S02_2023_2_QuizIn_sint.exception.NombreDeFoisJoueExce
 import fr.iut.montreuil.R4_S02_2023_2_QuizIn_sint.exception.NombreReponseExceptions;
 import fr.iut.montreuil.R4_S02_2023_2_QuizIn_sint.exception.PasDeStatsExceptions;
 import fr.iut.montreuil.R4_S02_2023_2_QuizIn_sint.modeles.IServiceQuestionnaire;
+import fr.iut.montreuil.R4_S02_2023_2_Quizin.questionnaire_sme.entities.dto.QuestionDTO;
+import fr.iut.montreuil.R4_S02_2023_2_Quizin.questionnaire_sme.entities.dto.QuestionnaireDTO;
 
 public class IServicequestionnaireImpl implements IServiceQuestionnaire {
 
@@ -12,61 +14,64 @@ public class IServicequestionnaireImpl implements IServiceQuestionnaire {
     public MeilleurQuestionnaireDTO recupererLesStats(QuestionnaireDTO questionnaireDTO) throws PasDeStatsExceptions, NombreDeFoisJoueExceptions, NombreReponseExceptions {
         MeilleurQuestionnaireDTO bestOfQuestionnaireDTO = new MeilleurQuestionnaireDTO();
         bestOfQuestionnaireDTO.setIdQuestionnaire(questionnaireDTO.getIdQuestionnaire());
-        if (questionnaireDTO.getNbDeFoisJoueQuestionnaire() < 0)
+        if (questionnaireDTO.getNbJouerQuestionnaire() < 0)
             throw new NombreDeFoisJoueExceptions();
-        bestOfQuestionnaireDTO.setNbDeFoisJoueQuestionnaire(questionnaireDTO.getNbDeFoisJoueQuestionnaire());
+        bestOfQuestionnaireDTO.setNbDeFoisJoueQuestionnaire(questionnaireDTO.getNbJouerQuestionnaire());
 
         QuestionDTO meilleurTaux;
         int i = 0;
         do {
-            meilleurTaux = questionnaireDTO.getListeQuestions().get(i);
-        } while (meilleurTaux.getStatsQuestions().getNbDeFoisJoueQuestion() <= 0);
+            meilleurTaux = questionnaireDTO.getQuestions().get(i);
+        } while (meilleurTaux.getStatsQuestion().getNbJouer() <= 0);
 
-        for (QuestionDTO questionDTO : questionnaireDTO.getListeQuestions()) {
-            if (questionDTO.getStatsQuestions() == null)
+        for (QuestionDTO questionDTO : questionnaireDTO.getQuestions()) {
+            if (questionDTO.getStatsQuestion() == null)
                 throw new PasDeStatsExceptions();
-            if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() > bestOfQuestionnaireDTO.getNbDeFoisJoueQuestionnaire())
+            if (questionDTO.getStatsQuestion().getNbJouer() > bestOfQuestionnaireDTO.getNbDeFoisJoueQuestionnaire())
                 throw new NombreDeFoisJoueExceptions();
-            if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() > 0 || questionDTO.getStatsQuestions().getNbDeReussiteQuestion() > questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion())
+            if (questionDTO.getStatsQuestion().getNbJouer() > 0 || questionDTO.getStatsQuestion().getNbOK() > questionDTO.getStatsQuestion().getNbJouer())
                 throw new NombreReponseExceptions();
 
-            if ((float) questionDTO.getStatsQuestions().getNbDeReussiteQuestion() / questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() >
-                    (float) meilleurTaux.getStatsQuestions().getNbDeReussiteQuestion() / meilleurTaux.getStatsQuestions().getNbDeFoisJoueQuestion()) {
+            if ((float) questionDTO.getStatsQuestion().getNbOK() / questionDTO.getStatsQuestion().getNbJouer() >
+                    (float) meilleurTaux.getStatsQuestion().getNbOK() / meilleurTaux.getStatsQuestion().getNbJouer()) {
                 meilleurTaux = questionDTO;
-            } else if ((float) questionDTO.getStatsQuestions().getNbDeReussiteQuestion() / questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() ==
-                    (float) meilleurTaux.getStatsQuestions().getNbDeReussiteQuestion() / meilleurTaux.getStatsQuestions().getNbDeFoisJoueQuestion()) {
-                if (questionDTO.getDifficultes() > meilleurTaux.getDifficultes())
+            } else if ((float) questionDTO.getStatsQuestion().getNbOK() / questionDTO.getStatsQuestion().getNbJouer() ==
+                    (float) meilleurTaux.getStatsQuestion().getNbOK() / meilleurTaux.getStatsQuestion().getNbJouer()) {
+                if (questionDTO.getDifficulte() > meilleurTaux.getDifficulte())
                     meilleurTaux = questionDTO;
-                else if (questionDTO.getDifficultes() == meilleurTaux.getDifficultes())
-                    if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() > meilleurTaux.getStatsQuestions().getNbDeFoisJoueQuestion())
+                else if (questionDTO.getDifficulte() == meilleurTaux.getDifficulte())
+                    if (questionDTO.getStatsQuestion().getNbJouer() > meilleurTaux.getStatsQuestion().getNbJouer())
                         meilleurTaux = questionDTO;
-                    else if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() == meilleurTaux.getStatsQuestions().getNbDeFoisJoueQuestion())
-                        if (questionDTO.getNumQuestion() < meilleurTaux.getNumQuestion())
+                    else if (questionDTO.getStatsQuestion().getNbJouer() == meilleurTaux.getStatsQuestion().getNbJouer())
+                        if (questionDTO.getNum_question() < meilleurTaux.getNum_question())
                             meilleurTaux = questionDTO;
             }
 
         }
         QuestionDTO pireTaux;
-        pireTaux = questionnaireDTO.getListeQuestions().get(i);
+        pireTaux = questionnaireDTO.getQuestions().get(i);
 
-        for (QuestionDTO questionDTO : questionnaireDTO.getListeQuestions()) {
-            if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() > 0
-                    && (float) questionDTO.getStatsQuestions().getNbDeReussiteQuestion() / questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() <
-                    (float) pireTaux.getStatsQuestions().getNbDeReussiteQuestion() / pireTaux.getStatsQuestions().getNbDeFoisJoueQuestion()) {
+        for (QuestionDTO questionDTO : questionnaireDTO.getQuestions()) {
+            if (questionDTO.getStatsQuestion().getNbJouer() > 0
+                    && (float) questionDTO.getStatsQuestion().getNbOK() / questionDTO.getStatsQuestion().getNbJouer() <
+                    (float) pireTaux.getStatsQuestion().getNbOK() / pireTaux.getStatsQuestion().getNbJouer()) {
                 pireTaux = questionDTO;
-            } else if ((float) questionDTO.getStatsQuestions().getNbDeReussiteQuestion() / questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() ==
-                    (float) pireTaux.getStatsQuestions().getNbDeReussiteQuestion() / pireTaux.getStatsQuestions().getNbDeFoisJoueQuestion()) {
-                if (questionDTO.getDifficultes() < pireTaux.getDifficultes())
+            } else if ((float) questionDTO.getStatsQuestion().getNbOK() / questionDTO.getStatsQuestion().getNbJouer() ==
+                    (float) pireTaux.getStatsQuestion().getNbOK() / pireTaux.getStatsQuestion().getNbJouer()) {
+                if (questionDTO.getDifficulte() < pireTaux.getDifficulte())
                     pireTaux = questionDTO;
-                else if (questionDTO.getDifficultes() == pireTaux.getDifficultes())
-                    if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() > pireTaux.getStatsQuestions().getNbDeFoisJoueQuestion())
+                else if (questionDTO.getDifficulte() == pireTaux.getDifficulte())
+                    if (questionDTO.getStatsQuestion().getNbJouer() > pireTaux.getStatsQuestion().getNbJouer())
                         pireTaux = questionDTO;
-                    else if (questionDTO.getStatsQuestions().getNbDeFoisJoueQuestion() == pireTaux.getStatsQuestions().getNbDeFoisJoueQuestion())
-                        if (questionDTO.getNumQuestion() < pireTaux.getNumQuestion())
+                    else if (questionDTO.getStatsQuestion().getNbJouer() == pireTaux.getStatsQuestion().getNbJouer())
+                        if (questionDTO.getNum_question() < pireTaux.getNum_question())
                             pireTaux = questionDTO;
             }
         }
 
         return bestOfQuestionnaireDTO;
     }
+
+
+
 }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../S4-R02-2023_02_QuizIn_Questionnaire-sme/src/fr/iut/montreuil/R4_S02_2023_2_Quizin/QuizIn-Questionnaire-sme/QuizIn-Questionnaire-sme.iml" filepath="$PROJECT_DIR$/../S4-R02-2023_02_QuizIn_Questionnaire-sme/src/fr/iut/montreuil/R4_S02_2023_2_Quizin/QuizIn-Questionnaire-sme/QuizIn-Questionnaire-sme.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/quiz_R4-S02-2023-2-QuizIn-sint.iml" filepath="$PROJECT_DIR$/.idea/quiz_R4-S02-2023-2-QuizIn-sint.iml" />
     </modules>
   </component>
